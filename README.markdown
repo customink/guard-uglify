@@ -1,58 +1,35 @@
-## What?
-Compresses your main public javascript file, using uglifyjs and the uglifier gem when you save your source file.
+# guard-uglify
+Provides [guard](https://github.com/guard/guard) support for uglifying javascript files via [uglifier](https://github.com/lautis/uglifier)
 
-## Use
-if you haven't already `gem install uglifier`  
-then `gem install guard-uglify`  
-in your project's directory root  
-`guard init`  
-`guard init uglify`  
+## Installation
+Add the following to your <tt>Gemfile</tt>
 
-which will add this to your Guardfile  
+    gem 'uglifier', '~> 1.3.0'
+    gem 'guard-uglify', '~> 0.3.0', :git => 'git://github.com/customink/guard-uglify.git'
 
-    guard 'uglify', :input => 'app/assets/javascript/application.js', :output => "public/javascripts/application.js" do
-      watch 'app/assets/javascripts/application.js'
+## Usage
+
+Generate a <tt>Guardfile</tt> if you have not done so already:
+
+    guard init
+
+Otherwise, append the uglify template to your <tt>Guardfile</tt>:
+
+    guard init uglify
+
+which will add this to your <tt>Guardfile</tt>:
+
+    guard 'uglify', :input => 'app/assets/javascripts', :output => "public/javascripts" do
+      watch (%r{foo.js})
+      watch (%r{bar.js})
     end
 
-The destination file will be compressed when the `watch`ed file changes.  If you are using this with my `guard-sprocketize` gem, place the above guard block after the sprockets block in your `Guardfile`.
+Changes to files that are being watched under the input directory will be uglified, have an extension appended, and then output to the output directory.  With the stock example, updates to <tt>app/assets/javascripts/foo.js</tt> and <tt>app/assets/javascripts/bar.js</tt> will result in <tt>public/javascripts/foo.min.js</tt> and <tt>public/javascripts/bar.min.js</tt> being written.
 
-The base configuration would work for a rails 3 project with a directory structure like  
-        
-    |-- app
-    |   |-- controllers
-    |   |-- assets
-    |   |   |-- sass
-    |   |   `-- javascripts
-    |   |       `-- application.js # your source javascript file 
-    |   |-- helpers
-    |   |-- mailers
-    |   |-- models
-    |   `-- views
-    |       `-- layouts
-    |-- config
-    |   |-- environments
-    |   |-- initializers
-    |   `-- locales
-    |-- db
-    |-- doc
-    |-- lib
-    |   `-- tasks
-    ...
-    |-- public
-        `-- javascripts
-            `-- application.js # file to be compressed
-    ... etc.
+## Options
+* <tt>extension</tt> - Sets the minified extension that is appended. Default is min. Ex: <tt>foo.js</tt> => <tt>foo.min.js</tt>
+* <tt>all_on_start</tt> - Determines if all target files should be minified on start.  Default is false.
 
-## TODO
-tests
+## Credits
 
-## License
-(The MIT License)
-
-Copyright (c) 2011 Aaron Cruz
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Modified from [guard-uglify](https://github.com/pferdefleisch/guard-uglify) by Aaron Cruz
