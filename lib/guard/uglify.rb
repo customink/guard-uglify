@@ -36,7 +36,10 @@ module Guard
 
     def run_on_removals(paths)
       begin
-        minpaths = paths.map{|f| f.split(".").insert(-2, @extension).join(".")}
+        minpaths = paths
+        unless @extension.empty?
+          minpaths = paths.map{|f| f.split(".").insert(-2, @extension).join(".")}
+        end
         File.delete(*minpaths)
         UI.info "Removed #{minpaths.join(",")}"
         Notifier.notify "Removed #{minpaths.join(",")}"
@@ -54,7 +57,11 @@ module Guard
         begin
           uglified = Uglifier.compile(File.read(file), :copyright => false)
           outdir = @output || File.dirname(file)
-          outfile = File.join(outdir, File.basename(file).split(".").insert(-2, @extension).join("."))
+          if @extension.empty?
+            outfile = File.join(outdir, File.basename(file))
+          else
+            outfile = File.join(outdir, File.basename(file).split(".").insert(-2, @extension).join("."))
+          end
           File.open(outfile,'w'){ |f| f.write(uglified) }
           UI.info         "Uglified #{file} to #{outfile}"
           Notifier.notify "Uglified #{file} to #{outfile}", :title => 'Uglify'
