@@ -54,7 +54,6 @@ module Guard
     private
     def uglify(paths)
       paths.each do |file|
-        puts file
         begin
           uglified = Uglifier.compile(File.read(file), :copyright => false)
           outdir = @output || File.dirname(file)
